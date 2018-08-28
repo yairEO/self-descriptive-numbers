@@ -26,10 +26,11 @@
         <form>
             <section>
                 <aside class='leftSide'>
-                    <pre>
+                <pre>
 function createNumber(N){
-    var result = Array(N).fill(0),
-        count;
+    var result = Array.from({length:N}, () => Math.floor(Math.random() * 10)),
+        count,
+        memory = [];
 
     function countInArray(array, value){
         return array.reduce((a, b, idx) => a + (b === value && idx != value), 0);
@@ -39,16 +40,18 @@ function createNumber(N){
         count = countInArray(result, i);
 
         // if the digit on index [i] should change, then update the result
-        if( result[i] != count ){
+        if( result[i] != count )
             result[i] = count;
-            if( i == result.length-1 ) // if last item changed, restart the loop
-                i = -1;
+
+        if( i == result.length-1 && !memory.includes( result.join('') ) ){
+            i = -1;
+            memory.push( result.join('') );
         }
     }
 
     return result;
 }
-                    </pre>
+                </pre>
                 </aside>
 
                 <aside class='rightSide'>
@@ -68,7 +71,8 @@ function createNumber(N){
 
 
                 function createNumber(N, dumpElm){
-                    var result = Array(N).fill(0),
+                    var result = Array.from({length:N}, () => Math.floor(Math.random() * 10)),
+                        memory = [],
                         count;
 
                     function countInArray(array, value){
@@ -78,16 +82,20 @@ function createNumber(N){
                     for( let i = 0; i < result.length; i++ ){
                         count = countInArray(result, i);
 
+                        if( count > 9 )
+                            return NaN;
+
                         // print iterations
                         dumpElm.innerHTML += (`<span>${i}</span> ${result[i]} => ${count} ${JSON.stringify(result)} <br>`)
 
                         // if the digit on index [i] should change, then update the result
-                        if( result[i] != count ){
+                        if( result[i] != count )
                             result[i] = count;
-                            if( i == result.length-1 ){ // if last item changed, restart the loop
-                                i = -1;
-                                dumpElm.innerHTML += `<br>`;
-                            }
+
+                        if( i == result.length-1 && !memory.includes( result.join('') ) ){
+                            i = -1;
+                            dumpElm.innerHTML += `<br>`;
+                            memory.push( result.join('') );
                         }
                     }
 
