@@ -9,7 +9,7 @@
 
         <style>
             label{ display:block; margin-bottom:.5em; }
-            input{ padding:.3em; font-size:1.4em; width:50%; }
+            input{ padding:.3em; font-size:1.4em; width:160px; }
 
             output{ color:blue; font:1.4em monospace; display:block; margin:1em 0; }
             .calcs{
@@ -82,8 +82,10 @@ function createNumber(N){
                     for( let i = 0; i < result.length; i++ ){
                         count = countInArray(result, i);
 
-                        if( count > 9 )
+                        if( count > 9 ){
+                            dumpElm.innerHTML = '';
                             return NaN;
+                        }
 
                         // print iterations
                         dumpElm.innerHTML += (`<span>${i}</span> ${result[i]} => ${count} ${JSON.stringify(result)} <br>`)
