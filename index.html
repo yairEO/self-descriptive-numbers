@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Self-descriptive numbers</title>
+        <meta name="author" content="Yair Even-Or">
+
+        <link rel="stylesheet" href="https://cdn.rawgit.com/yairEO/ec9e154c4269b9a0f264fba7f64d7383/raw/9c3a2c44786cc671d48f939cf14a14235b2dfaa3/vsync_demos.css">
+
+        <style>
+            label{ display:block; margin-bottom:.5em; }
+            input{ padding:.3em; font-size:1.4em; width:50%; }
+
+            output{ color:blue; font:1.4em monospace; display:block; margin:1em 0; }
+            .calcs{
+                font: 1.4em monospace;
+                margin: 1em 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <form>
+            <section>
+                <aside class='leftSide'>
+                    <pre>
+function createNumber(N){
+    var result = Array(N).fill(0),
+        count;
+
+    function countInArray(array, value){
+        return array.reduce((a, b, idx) => a + (b === value && idx != value), 0);
+    }
+
+    for( let i = 0; i < result.length; i++ ){
+        count = countInArray(result, i);
+
+        // if the digit on index [i] should change, then update the result
+        if( result[i] != count ){
+            result[i] = count;
+            if( i == result.length-1 ) // if last item changed, restart the loop
+                i = -1;
+        }
+    }
+
+    return result;
+}
+                    </pre>
+                </aside>
+
+                <aside class='rightSide'>
+                    <label>Enter the number of digits to create a <a href='https://en.wikipedia.org/wiki/Self-descriptive_number'>Self-Descriptive number</a></label>
+                    <input type='number' min='3' max='100' step='1' value='5' placeholder='Number of digits'>
+                    <output></output>
+                    <section class='calcs'></section>
+                </aside>
+            </section>
+        </form>
+
+        <script>
+            (function(){
+                var inputElm  = document.querySelector('input[type="number"]'),
+                    resultElm = document.querySelector('output'),
+                    calcsElm  = document.querySelector('.calcs');
+
+
+                function createNumber(N, dumpElm){
+                    var result = Array(N).fill(0),
+                        count;
+
+                    function countInArray(array, value){
+                        return array.reduce((a, b, idx) => a + (b === value && idx != value), 0);
+                    }
+
+                    for( let i = 0; i < result.length; i++ ){
+                        count = countInArray(result, i);
+
+                        // print iterations
+                        dumpElm.innerHTML += (`<span>[${i}]</span> ${result[i]} => ${count} ${JSON.stringify(result)} <br>`)
+
+                        // if the digit on index [i] should change, then update the result
+                        if( result[i] != count ){
+                            result[i] = count;
+                            if( i == result.length-1 ) // if last item changed, restart the loop
+                                i = -1;
+                        }
+                    }
+
+                    return +(result.join(''));
+                }
+
+
+                //////////////////////
+
+                inputElm.addEventListener('input', onInput);
+
+                function onInput(){
+                    calcsElm.innerHTML = "";
+                    var num;
+
+                    num = createNumber(+inputElm.value, calcsElm);
+
+                    resultElm.innerHTML = num;
+                }
+
+                onInput();
+            })()
+        </script>
+    </body>
+</html>
